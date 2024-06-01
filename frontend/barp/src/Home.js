@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Slider,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -14,8 +15,8 @@ import {
   CustomHeadingText,
   CustomLightText,
   CustomText,
-} from "../components/CustomText";
-import { Audio } from "expo-av";
+} from "./components/CustomText";
+import { Audio, Video } from "expo-av";
 
 export default function VideoUploadScreen({ handleOnUpload }) {
   const [video, setVideo] = useState(null);
@@ -35,10 +36,21 @@ export default function VideoUploadScreen({ handleOnUpload }) {
       quality: 1,
     });
 
-    console.log(result);
+    // console.log(result);
     if (!result.canceled) {
       setVideo(result.assets[0].uri);
     }
+
+    // if (!result.canceled) {
+    //   const videoUri = result.assets[0].uri;
+    //   const videoInfo = await Video.length(videoUri);
+    //   console.log(videoInfo);
+    //   if (videoInfo.durationMillis / 1000 > 30) {
+    //     setVideo(videoUri);
+    //   } else {
+    //     alert("Please select a video longer than 30 seconds.");
+    //   }
+    // }
   };
 
   const startRecording = async () => {
@@ -85,7 +97,7 @@ export default function VideoUploadScreen({ handleOnUpload }) {
           position: "absolute",
           top: 0,
         }}
-        source={require("./../../assets/background.json")}
+        source={require("../assets/background.json")}
       />
       <View style={styles.greetingsWrapper}>
         <LottieView
@@ -96,10 +108,10 @@ export default function VideoUploadScreen({ handleOnUpload }) {
             width: 200,
             height: 200,
           }}
-          source={require("./../../assets/avatar1.json")}
+          source={require("../assets/avatar1.json")}
         />
         <View style={styles.greetingsTextWrapper}>
-          <CustomHeadingText>Hi! I'm BARP 👋🏻</CustomHeadingText>
+          <CustomHeadingText>Hi, I'm BARP 👋🏻</CustomHeadingText>
           <View
             style={{
               display: "flex",
@@ -108,32 +120,64 @@ export default function VideoUploadScreen({ handleOnUpload }) {
           >
             <CustomText>Your personal music video composer 🎛️</CustomText>
 
-            <CustomText>
-              I can generate music videos for you just by using a video 🤯
-            </CustomText>
+            <CustomLightText>
+              PS - I can generate music videos for you just by using a video 🤯
+            </CustomLightText>
           </View>
         </View>
       </View>
 
-      <View style={styles.buttonsWrapper}>
-        <TouchableOpacity onPress={pickVideo} style={styles.button}>
-          <Text style={styles.buttonText}>Upload your video 📹</Text>
-        </TouchableOpacity>
+      <View>
+        <View style={styles.buttonsWrapper}>
+          <TouchableOpacity onPress={pickVideo} style={styles.button}>
+            {!video ? (
+              <Text style={styles.buttonText}>Upload video 📹</Text>
+            ) : (
+              <Text style={styles.buttonText}>Change video 📹</Text>
+            )}
+          </TouchableOpacity>
 
-        <Button
-          title={isRecording ? "Stop Recording" : "Start Recording"}
-          onPress={isRecording ? stopRecording : startRecording}
-        />
-
-        <TouchableOpacity
-          onPress={() => {
-            handleOnUpload(video, recordedUri);
+          <TouchableOpacity
+            style={styles.roundButton}
+            title={isRecording ? "Stop Recording" : "Start Recording"}
+            onPress={isRecording ? stopRecording : startRecording}
+          >
+            {isRecording ? (
+              <LottieView
+                autoPlay
+                loop
+                ref={animation}
+                style={{
+                  width: 30,
+                  height: 30,
+                }}
+                source={require("../assets/recording.json")}
+              />
+            ) : (
+              <Text style={styles.buttonText}>🎤</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+        <CustomLightText
+          style={{
+            margin: 5,
+            width: 200,
+            textAlign: "center",
+            alignSelf: "center",
           }}
-          style={styles.button}
         >
-          <Text style={styles.buttonText}>Generate your music video 📹</Text>
-        </TouchableOpacity>
+          Optionally you can record your voice as well for better tone-setting
+        </CustomLightText>
       </View>
+      <TouchableOpacity
+        disabled={!video}
+        onPress={() => {
+          handleOnUpload(video, recordedUri);
+        }}
+        style={styles.primaryButton}
+      >
+        <Text style={styles.buttonText}>Generate music video {"  "}📀</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -145,6 +189,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#161622",
+    justifyContent: "space-between",
+    paddingBottom: 20,
   },
   greetingsWrapper: {
     width: 50,
@@ -164,21 +210,43 @@ const styles = StyleSheet.create({
 
   buttonsWrapper: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 20,
+    gap: 10,
   },
+  roundButton: {
+    backgroundColor: "#EDFF7B",
+
+    aspectRatio: 1,
+
+    borderRadius: "50%",
+    alignItems: "center",
+    justifyContent: "center",
+    display: "flex",
+    height: 55,
+    width: 55,
+  },
+  primaryButton: {
+    textAlign: "center",
+    backgroundColor: "#00CAD7",
+    padding: 15,
+    margin: 20,
+    borderRadius: 10,
+    display: "flex",
+    alignItems: "center",
+  },
+
   button: {
     backgroundColor: "#ccf0fa",
     paddingVertical: 15,
     paddingHorizontal: 30,
-    borderRadius: 20,
+    borderRadius: 10,
     margin: 10,
   },
   buttonText: {
     color: "#161622",
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: "NotoSans_800ExtraBold",
   },
   videoUri: {

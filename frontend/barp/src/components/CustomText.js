@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   lightText: {
     fontFamily: "NotoSans_200ExtraLight", // Default font family
-    fontSize: 14, // Default font size
+    fontSize: 12, // Default font size
     color: "#fefefe",
   },
 });

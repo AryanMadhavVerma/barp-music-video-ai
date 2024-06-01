@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import VideoUploadScreen from "./src/home";
+import VideoUploadScreen from "./src/Home";
 import {
   NotoSans_200ExtraLight,
   NotoSans_500Medium,
