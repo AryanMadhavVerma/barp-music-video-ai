@@ -8,3 +8,4 @@ htmlcov
 .venv
 .env
 node_modules
+.env.local

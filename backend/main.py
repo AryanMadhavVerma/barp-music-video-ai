@@ -1,6 +1,8 @@
-from fastapi import FastAPI, UploadFile
 from typing import List
+
+from fastapi import FastAPI, UploadFile
 from gemini import get_prompt_for_suno
+from servers.suno import generate_suno_song
 
 app = FastAPI()
 data_folder = "./data/temp"
@@ -34,6 +36,12 @@ def predict(video_file: UploadFile, audio_file: UploadFile):
     result = get_prompt_for_suno(video_file_path=VIDEO_FILE_PATH, audio_file_path=AUDIO_FILE_PATH)
 
     # call suno to get results
+    
+    print(result)
+    
+    suno_song = generate_suno_song(rhyme=result['rhyme'], song_type=result['song_type'], title=result['title'])
+    
+    print(suno_song)
 
 
     # remove voice from suno results

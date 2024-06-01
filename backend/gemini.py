@@ -1,28 +1,22 @@
 import dotenv
+
 dotenv.load_dotenv()
 
+import json
 import os
 import time
+
 import google.generativeai as genai
 from google.ai import generativelanguage as glm
 from pydantic import BaseModel
-import json
 
 genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
 
-person = glm.Schema(
-    type = glm.Type.OBJECT,
-    properties = {
-        "data":  glm.Schema(type=glm.Type.STRING),
-        "song_type":  glm.Schema(type=glm.Type.STRING),
-    },
-    required=["data", "song_type"]
-)
 
 class SongOutput(BaseModel):
-    data: str
-    song_type: str
     rhyme: str
+    song_type: str
+    title: str
 
 def model_to_json(model_instance):
     return model_instance.model_dump_json()
@@ -44,15 +38,16 @@ def get_prompt_for_suno(video_file_path: str, audio_file_path: str) -> str:
         
         uploaded_files.append(file_upload)
         
-    json_model = model_to_json(SongOutput(data="gloomy weather", song_type="sad, slow song", rhyme="yaad aaye woh pehli baarish jab tujhe ek nazar dekha tha"))
+    json_model = model_to_json(SongOutput(title="gloomy weather", song_type="sad, slow song", rhyme="The city lights are twinkling so bright, a symphony of colors in the night. The wind whispers secrets through the trees, a gentle melody carried by the breeze."))
     prompt = f"""Make the output in a way 
         that we can feed this to an suno ai model (which is an prompt to song model)
         can you focus more on the scenery and the vibes of the place, 
         you do not need to focus on the background noise. 
         MAKE USE OF ALL THE FILES AND GENERATE THE OUTPUT FOR THE SAME. GENERATE A MINIMUM OF 15 WORDS. AND AN MAXIMUM OF 40 words.
-        IF A SONG NEEDS TO BE GENERATED FROM THE OUTPUT, YOU ALSO NEED TO OUTPUT THE TYPE OF SONG THAT WOULD SUIT THE VIBE GIVEN.
-        ALSO OUTPUT AN RHYME THAT CAN WORK WELL WITH THE GIVEN VIBE.
+        IF A SONG NEEDS TO BE GENERATED FROM THE OUTPUT, YOU ALSO NEED TO OUTPUT THE GENRE OF SONG THAT WOULD SUIT THE VIBE GIVEN. ALSO APPEND THE MALE, FEMALE AT THE END OF THE GENRE ACCORDING TO THE PROVIDED VOICE.
+        ALSO OUTPUT AN RHYME THAT CAN WORK WELL WITH THE GIVEN VIBE. RHYME SHOULD BE ATLEAST 50 WORDS LONG. THIS IS A PROMPT FOR A SONG MODEL.
         PLEASE PROVIDE AN OUTPUT IN AN STRUCTURED FORMAT HAVING A MODEL LIKE: {json_model} ONLY RETURN THE JSON AS A STRING.
+        Don't send anything like '```json' in the output. Strictly follow the format provided.
     """
     model = genai.GenerativeModel(model_name="models/gemini-1.5-flash")
 
