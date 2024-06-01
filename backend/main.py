@@ -1,14 +1,11 @@
+import os
+import sys
 from typing import List
 
 from fastapi import FastAPI, UploadFile
 from gemini import get_prompt_for_suno
-<<<<<<< HEAD
-from servers.suno import generate_suno_song
-=======
 from pyngrok import ngrok
-import sys
-import os
->>>>>>> fd112c56b6873715d26161814325350b874045a1
+from servers.suno import generate_suno_song
 
 data_folder = "./data/temp"
 VIDEO_FILE_PATH = "./data/temp/video_file.mp4"
