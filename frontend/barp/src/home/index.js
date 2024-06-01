@@ -93,10 +93,10 @@ export default function VideoUploadScreen({ handleOnUpload }) {
           loop
           ref={animation}
           style={{
-            width: 150,
-            height: 150,
+            width: 200,
+            height: 200,
           }}
-          source={require("./../../assets/avatar.json")}
+          source={require("./../../assets/avatar1.json")}
         />
         <View style={styles.greetingsTextWrapper}>
           <CustomHeadingText>Hi! I'm BARP 👋🏻</CustomHeadingText>
