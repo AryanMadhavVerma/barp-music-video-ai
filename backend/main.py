@@ -7,17 +7,15 @@ import ngrok
 from elevent_labs import get_cloned_voice
 from fastapi import FastAPI, UploadFile, File
 from gemini import get_prompt_for_suno
-<<<<<<< HEAD
 from pydantic import Field
 from servers.suno import generate_suno_song
 import sys
 import os
 import urllib.request
 from voice_utils.isolate_voice import isolate_voice
-=======
 from voice_utils.isolate_voice import isolate_vocals_and_instrumentals
 from voice_utils.clone_voice import clone_voice
->>>>>>> 22517ef (add all voice utils)
+
 
 data_folder = "./data/temp"
 VIDEO_FILE_PATH = "./data/temp/video_file.mp4"
