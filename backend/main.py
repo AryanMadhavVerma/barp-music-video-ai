@@ -1,11 +1,22 @@
 from fastapi import FastAPI, UploadFile
 from typing import List
 from gemini import get_prompt_for_suno
+from pyngrok import ngrok
+import sys
+import os
 
-app = FastAPI()
 data_folder = "./data/temp"
 VIDEO_FILE_PATH = "./data/temp/video_file.mp4"
 AUDIO_FILE_PATH = "./data/temp/audio_file.mp3"
+
+app = FastAPI()
+
+if os.environ.get("NGROK_AUTHTOKEN", ""):
+    port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else "8000"
+    public_url = ngrok.connect(port).public_url
+    print(f"ngrok tunnel \'{public_url}\' -> \'http://127.0.0.1:{port}\'")
+
+
 
 @app.post("/predict")
 def predict(video_file: UploadFile, audio_file: UploadFile):
@@ -34,7 +45,6 @@ def predict(video_file: UploadFile, audio_file: UploadFile):
     result = get_prompt_for_suno(video_file_path=VIDEO_FILE_PATH, audio_file_path=AUDIO_FILE_PATH)
 
     # call suno to get results
-
 
     # remove voice from suno results
 
