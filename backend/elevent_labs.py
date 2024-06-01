@@ -1,6 +1,7 @@
 import dotenv
 from elevenlabs import play
 from elevenlabs.client import ElevenLabs
+import os
 
 dotenv.load_dotenv()
 

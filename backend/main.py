@@ -5,7 +5,7 @@ from typing import List, Optional
 # from pyngrok import ngrok
 import ngrok
 from elevent_labs import get_cloned_voice
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, File
 from gemini import get_prompt_for_suno
 from pydantic import Field
 from servers.suno import generate_suno_song
