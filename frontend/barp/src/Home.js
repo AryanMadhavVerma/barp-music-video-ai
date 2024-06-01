@@ -29,7 +29,6 @@ export default function VideoUploadScreen({ handleOnUpload }) {
   const recordingRef = useRef(null);
 
   const pickVideo = async () => {
-    const MIN_VIDEO_LENGTH = 30;
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Videos,
@@ -40,14 +39,6 @@ export default function VideoUploadScreen({ handleOnUpload }) {
 
       if (!result.canceled) {
         const { uri } = result.assets[0];
-
-        const { size } = await FileSystem.getInfoAsync(uri);
-        const videoDuration = size / 1024 / 1024; // Convert bytes to seconds (rough estimate)
-
-        if (videoDuration < MIN_VIDEO_LENGTH) {
-          alert("Video must be at least 30 seconds long.");
-          return;
-        }
 
         console.log("Video uploaded successfully");
         setVideo(uri);
