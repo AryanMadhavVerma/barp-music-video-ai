@@ -15,11 +15,17 @@ import {
   CustomLightText,
   CustomText,
 } from "../components/CustomText";
+import { Audio } from "expo-av";
 
-export default function VideoUploadScreen() {
+export default function VideoUploadScreen({ handleOnUpload }) {
   const [video, setVideo] = useState(null);
-  const [uploading, setUploading] = useState(false);
+
   const animation = useRef(null);
+  const [recording, setRecording] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordedUri, setRecordedUri] = useState(null);
+
+  const recordingRef = useRef(null);
 
   const pickVideo = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -34,37 +40,35 @@ export default function VideoUploadScreen() {
     }
   };
 
-  const uploadVideo = async () => {
-    if (!video) return;
-
-    setUploading(true);
-
-    const uriParts = video.split(".");
-    const fileType = uriParts[uriParts.length - 1];
-
-    const formData = new FormData();
-    formData.append("video", {
-      uri: video,
-      name: `video.${fileType}`,
-      type: `video/${fileType}`,
-    });
-
+  const startRecording = async () => {
     try {
-      const response = await fetch("YOUR_SERVER_URL/upload", {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
       });
 
-      const result = await response.json();
-      console.log(result);
-    } catch (error) {
-      console.error("Error uploading video:", error);
-    } finally {
-      setUploading(false);
+      console.log("Starting recording...");
+      const { recording } = await Audio.Recording.createAsync(
+        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+      );
+      setRecording(recording);
+      setIsRecording(true);
+      recordingRef.current = recording;
+      console.log("Recording started");
+    } catch (err) {
+      console.error("Failed to start recording", err);
     }
+  };
+
+  const stopRecording = async () => {
+    console.log("Stopping recording...");
+    setRecording(undefined);
+    setIsRecording(false);
+    await recordingRef.current.stopAndUnloadAsync();
+    const uri = recordingRef.current.getURI();
+    setRecordedUri(uri);
+    console.log("Recording stopped and stored at", uri);
   };
 
   return (
@@ -112,6 +116,21 @@ export default function VideoUploadScreen() {
       <View style={styles.buttonsWrapper}>
         <TouchableOpacity onPress={pickVideo} style={styles.button}>
           <Text style={styles.buttonText}>Upload your video 📹</Text>
+        </TouchableOpacity>
+
+        <Button
+          title={isRecording ? "Stop Recording" : "Start Recording"}
+          onPress={isRecording ? stopRecording : startRecording}
+        />
+        {/* {recordedUri && <Text>Recorded at: {recordedUri}</Text>} */}
+
+        <TouchableOpacity
+          onPress={() => {
+            handleOnUpload(video, recordedUri);
+          }}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Generate your music video 📹</Text>
         </TouchableOpacity>
       </View>
       {/* 
