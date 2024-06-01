@@ -29,28 +29,32 @@ export default function VideoUploadScreen({ handleOnUpload }) {
   const recordingRef = useRef(null);
 
   const pickVideo = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    const MIN_VIDEO_LENGTH = 30;
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
 
-    // console.log(result);
-    if (!result.canceled) {
-      setVideo(result.assets[0].uri);
+      if (!result.canceled) {
+        const { uri } = result.assets[0];
+
+        const { size } = await FileSystem.getInfoAsync(uri);
+        const videoDuration = size / 1024 / 1024; // Convert bytes to seconds (rough estimate)
+
+        if (videoDuration < MIN_VIDEO_LENGTH) {
+          alert("Video must be at least 30 seconds long.");
+          return;
+        }
+
+        console.log("Video uploaded successfully");
+        setVideo(uri);
+      }
+    } catch (error) {
+      console.error("Error uploading video:", error);
     }
-
-    // if (!result.canceled) {
-    //   const videoUri = result.assets[0].uri;
-    //   const videoInfo = await Video.length(videoUri);
-    //   console.log(videoInfo);
-    //   if (videoInfo.durationMillis / 1000 > 30) {
-    //     setVideo(videoUri);
-    //   } else {
-    //     alert("Please select a video longer than 30 seconds.");
-    //   }
-    // }
   };
 
   const startRecording = async () => {
