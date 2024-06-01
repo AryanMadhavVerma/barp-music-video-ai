@@ -35,7 +35,7 @@ def isolate_vocals_and_instrumentals(file_path):
     instrumental_audio = librosa.istft(S_background * phase)
 
     # Define the directory to save the files
-    temp_dir = os.path.join('..', 'data', 'temp')  # Correctly adjusted relative path
+    temp_dir = os.path.join('data', 'temp')  # Correctly adjusted relative path
  # Adjusted relative path to the temp folder
 
     # Ensure the directory exists
@@ -49,4 +49,5 @@ def isolate_vocals_and_instrumentals(file_path):
     sf.write(vocal_path, vocal_audio, samplerate=sr, subtype='PCM_24')
     sf.write(instrumental_path, instrumental_audio, samplerate=sr, subtype='PCM_24')
 
-    return "Vocals and instrumental tracks saved successfully."
+    print("Vocals and instrumental tracks saved successfully.")
+    return './' + vocal_path, './' + instrumental_path
