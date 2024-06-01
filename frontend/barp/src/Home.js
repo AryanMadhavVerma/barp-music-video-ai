@@ -156,16 +156,16 @@ export default function VideoUploadScreen({ handleOnUpload }) {
         <CustomLightText
           style={{
             margin: 5,
-            width: 200,
+            width: 300,
             textAlign: "center",
             alignSelf: "center",
           }}
         >
-          Optionally you can record your voice as well for better tone-setting
+          Note - The video should be atleast 30 seconds long
         </CustomLightText>
       </View>
       <TouchableOpacity
-        disabled={!video}
+        disabled={!video || !recordedUri}
         onPress={() => {
           handleOnUpload(video, recordedUri);
         }}
