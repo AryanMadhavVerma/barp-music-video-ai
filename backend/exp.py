@@ -1,7 +1,8 @@
-from voice_utils.isolate_voice import isolate_vocals_and_instrumentals
-from voice_utils.clone_voice import clone_voice
-from voice_utils.pitch_correction import pitch_correction
-from voice_utils.generate_final_mix import generate_final_mix
+from utils.voice_utils.isolate_voice import isolate_vocals_and_instrumentals
+from utils.voice_utils.clone_voice import clone_voice
+from utils.voice_utils.pitch_correction import pitch_correction
+from utils.voice_utils.generate_final_mix import generate_final_mix
+from utils.video_utils.combine_video_audio import combine_video_audio
 
 def generate_music(file_path):
     vocals, instrumental =  isolate_vocals_and_instrumentals(file_path)
@@ -16,7 +17,10 @@ def generate_music(file_path):
     print("oath of instrumental", instrumental)
 
     final_mix = generate_final_mix(background=file_path, overlay=pitch_corrected_cloned_voice)
-    return "final mix generated succes"
+    print("final_mix path is", final_mix)
+    final_video = combine_video_audio(video_file_path="./data/temp/video_file.mp4", audio_file_path=final_mix)
+
+    return "final_video has been saved to the path"
 
 
 try:
