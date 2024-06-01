@@ -12,6 +12,10 @@ from servers.suno import generate_suno_song
 import sys
 import os
 import urllib.request
+from voice_utils.isolate_voice import isolate_voice
+from voice_utils.isolate_voice import isolate_vocals_and_instrumentals
+from voice_utils.clone_voice import clone_voice
+
 
 data_folder = "./data/temp"
 VIDEO_FILE_PATH = "./data/temp/video_file.mp4"
@@ -68,12 +72,21 @@ def predict(video_file: Optional[UploadFile], audio_file: Optional[UploadFile] =
 
     req = urllib.request.Request(url_to_download, headers=headers)
 
+    
     try:
         with urllib.request.urlopen(req) as response, open(SUNO_SONG_FILE_PATH, 'wb') as out_file:
             out_file.write(response.read())
     except Exception as e:
         print(f'HTTP Error: {e.code} {e.reason}')
     # remove voice from suno results
+
+    ##assuming we get an mp3 back
+    
+    isolated_voice, instrumental = isolate_vocals_and_instrumentals(AUDIO_FILE_PATH)
+    #we need to add voice id as the second parameter
+    cloned_voice = clone_voice(isolated_voice, "36OV89luoouTHbZHUWhv")
+
+
     ## clone voice
     cloned_voice = get_cloned_voice(file_path=AUDIO_FILE_PATH)
 
