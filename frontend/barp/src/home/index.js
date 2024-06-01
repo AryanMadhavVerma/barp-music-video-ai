@@ -35,6 +35,7 @@ export default function VideoUploadScreen({ handleOnUpload }) {
       quality: 1,
     });
 
+    console.log(result);
     if (!result.canceled) {
       setVideo(result.assets[0].uri);
     }
@@ -68,6 +69,7 @@ export default function VideoUploadScreen({ handleOnUpload }) {
     await recordingRef.current.stopAndUnloadAsync();
     const uri = recordingRef.current.getURI();
     setRecordedUri(uri);
+
     console.log("Recording stopped and stored at", uri);
   };
 
@@ -122,7 +124,6 @@ export default function VideoUploadScreen({ handleOnUpload }) {
           title={isRecording ? "Stop Recording" : "Start Recording"}
           onPress={isRecording ? stopRecording : startRecording}
         />
-        {/* {recordedUri && <Text>Recorded at: {recordedUri}</Text>} */}
 
         <TouchableOpacity
           onPress={() => {
@@ -133,17 +134,6 @@ export default function VideoUploadScreen({ handleOnUpload }) {
           <Text style={styles.buttonText}>Generate your music video 📹</Text>
         </TouchableOpacity>
       </View>
-      {/* 
-      {video && <Text style={styles.videoUri}>{video}</Text>}
-      <TouchableOpacity
-        onPress={uploadVideo}
-        style={styles.button}
-        disabled={uploading}
-      >
-        <Text style={styles.buttonText}>
-          {uploading ? "Uploading..." : "Upload Video"}
-        </Text>
-      </TouchableOpacity> */}
     </View>
   );
 }

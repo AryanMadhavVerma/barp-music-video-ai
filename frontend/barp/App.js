@@ -39,17 +39,13 @@ export default function App() {
     const videoFileData = await readFile(videouri);
     const audioFileData = await readFile(audiouri);
 
-    // const uriParts = video.split(".");
-    // const fileType = uriParts[uriParts.length - 1];
-
     const formData = new FormData();
-    // formData.append("video_file", videoFileData);
-    // formData.append("audio_file", audioFileData);
 
+    console.log(videouri);
     formData.append("video_file", {
       uri: videouri,
-      name: "video.mov",
-      type: "video/mov",
+      name: "video.mp4",
+      type: "video/mp4",
       data: videoFileData,
     });
 
@@ -61,7 +57,6 @@ export default function App() {
     });
 
     console.log("Sending the Result to the server...");
-    //console.log(formData);
 
     try {
       const response = await fetch(
