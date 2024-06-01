@@ -13,6 +13,7 @@ python-dotenv = "^1.0.1"
 google-ai-generativelanguage = "^0.6.4"
 pydantic = "^2.7.2"
 fastapi = "^0.111.0"
+pyngrok = "^7.1.6"
 
 
 [build-system]
