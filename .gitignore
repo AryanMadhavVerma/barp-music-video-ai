@@ -9,3 +9,6 @@ htmlcov
 .env
 node_modules
 .env.local
+.next
+.dist
+dist

@@ -6,7 +6,7 @@ def generate_final_mix(background, overlay):
     background = AudioSegment.from_file(background)
 
     # Reduce the background volume by 1-2 dB; test and adjust for desired "80%" effect
-    reduced_background = background - 3  # Adjust dB here to fit the "80%" subjective requirement
+    reduced_background = background - 4  # Adjust dB here to fit the "80%" subjective requirement
 
     # Mixing the tracks (overlay the vocal track onto the background)
     final_mix = reduced_background.overlay(overlay, position=0)
