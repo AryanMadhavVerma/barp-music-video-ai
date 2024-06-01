@@ -2,6 +2,7 @@ import os
 import sys
 from typing import List
 
+from elevent_labs import get_cloned_voice
 from fastapi import FastAPI, UploadFile
 from gemini import get_prompt_for_suno
 from pyngrok import ngrok
@@ -22,9 +23,7 @@ if os.environ.get("NGROK_AUTHTOKEN", ""):
 
 @app.post("/predict")
 def predict(video_file: UploadFile, audio_file: UploadFile):
-    result = ""
-    # download file to local
-    
+    result = ""    
     try:
         with open(VIDEO_FILE_PATH, 'wb') as f:
             while contents := video_file.file.read(1024 * 1024):
@@ -47,14 +46,12 @@ def predict(video_file: UploadFile, audio_file: UploadFile):
     result = get_prompt_for_suno(video_file_path=VIDEO_FILE_PATH, audio_file_path=AUDIO_FILE_PATH)
 
     # call suno to get results
-    
-    print(result)
-    
+        
     suno_song = generate_suno_song(rhyme=result['rhyme'], song_type=result['song_type'], title=result['title'])
     
-    print(suno_song)
-
     # remove voice from suno results
+    ## clone voice
+    cloned_voice = get_cloned_voice(file_path=AUDIO_FILE_PATH)
 
     # change voice
 
