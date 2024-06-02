@@ -1,41 +1,43 @@
+import json
 import os
 import sys
+import time
+import urllib.request
 from typing import List, Optional
-import json
 
 # from pyngrok import ngrok
 from get_cloned_voice import get_cloned_voice
-from fastapi import FastAPI, UploadFile, File, Request, Response, HTTPException
+from fastapi import FastAPI, UploadFile, File, Request, Response, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
+import ngrok 
 from fastapi.staticfiles import StaticFiles
 from gemini import get_prompt_for_suno
+# from pyngrok import ngrok
+from get_cloned_voice import get_cloned_voice
 from pydantic import Field
 from servers.suno import generate_suno_song
-import sys
-import os
-import urllib.request
 from utils.video_utils.combine_video_audio import combine_video_audio
-from utils.voice_utils.isolate_voice import isolate_vocals_and_instrumentals
 from utils.voice_utils.clone_voice import clone_voice
-from utils.voice_utils.pitch_correction import pitch_correction
 from utils.voice_utils.generate_final_mix import generate_final_mix
-import ngrok
 import time
 from google.cloud import storage
 
 
+from utils.voice_utils.isolate_voice import isolate_vocals_and_instrumentals
+from utils.voice_utils.pitch_correction import pitch_correction
 
 data_folder = "./data/temp"
 VIDEO_FILE_PATH = "./data/temp/video_file.mp4"
 AUDIO_FILE_PATH = "./data/temp/audio_file.mp3"
 SUNO_SONG_FILE_PATH = "./data/temp/suno_song.mp3"
+DOMAIN_NAME = "regular-adder-sadly.ngrok-free.app"
 
 app = FastAPI()
 
 if os.environ.get("NGROK_AUTHTOKEN", ""):
     port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else "8000"
     # public_url = ngrok.connect(port).public_url
-    listener = ngrok.forward("localhost:8000", authtoken_from_env=True, domain="regular-adder-sadly.ngrok-free.app")
+    listener = ngrok.forward("localhost:8000", authtoken_from_env=True, domain=DOMAIN_NAME)
     # print(f"ngrok tunnel \'{public_url}\' -> \'http://127.0.0.1:{port}\'")
 
 
@@ -118,7 +120,7 @@ async def predict(video_file: Optional[UploadFile], audio_file: Optional[UploadF
     upload_results_to_gcs()
     return {
         "message": "Success",
-        "final_video": "final_video.mp4"
+        "final_video": f"{DOMAIN_NAME}/static/final_video.mp4"
     }
 
 app.mount("/static", StaticFiles(directory="data/temp"), name="static")

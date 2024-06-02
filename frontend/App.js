@@ -1,34 +1,44 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import VideoUploadScreen from "./src/Home";
 import {
   NotoSans_200ExtraLight,
   NotoSans_500Medium,
   NotoSans_800ExtraBold,
   useFonts,
 } from "@expo-google-fonts/noto-sans";
-import { useState } from "react";
 import * as FileSystem from "expo-file-system";
-import * as Permissions from "expo-permissions";
+import { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
+import AppVideoPlayer from "./src/AppVideoPlayer";
+import VideoUploadScreen from "./src/Home";
 import Loader from "./src/Loader";
+import { registerRootComponent } from "expo";
+import * as Permissions from "expo-permissions";
 
 export default function App() {
   const [uploading, setUploading] = useState(false);
+  const [generatedSongURL, setGeneratedSongURL] = useState(null);
   let [fontsLoaded, fontError] = useFonts({
     NotoSans_800ExtraBold,
     NotoSans_500Medium,
     NotoSans_200ExtraLight,
   });
 
+  print(generatedSongURL);
+
   if (!fontsLoaded && !fontError) {
     return null;
   }
 
   const readFile = async (fileUri) => {
-    const fileData = await FileSystem.readAsStringAsync(fileUri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-    return fileData;
+    try {
+      const fileData = await FileSystem.readAsStringAsync(fileUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      return fileData;
+    } catch (error) {
+      console.error("Error reading file:", error);
+      return null;
+    }
   };
 
   const uploadVideoAudio = async (videouri, audiouri) => {
@@ -71,6 +81,7 @@ export default function App() {
       );
 
       const result = await response.json();
+      setGeneratedSongURL(result.final_video);
       console.log(result);
     } catch (error) {
       console.error("Error uploading video:", error);
@@ -82,6 +93,11 @@ export default function App() {
   if (uploading) {
     return <Loader />;
   }
+
+  if (generatedSongURL) {
+    return <AppVideoPlayer uri={generatedSongURL} />;
+  }
+
   return <VideoUploadScreen handleOnUpload={uploadVideoAudio} />;
 }
 
