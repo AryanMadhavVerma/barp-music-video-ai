@@ -20,6 +20,7 @@ librosa = "^0.10.2.post1"
 pydub = "^0.25.1"
 moviepy = "^1.0.3"
 uvicorn = "^0.30.0"
+google-cloud-storage = "^2.16.0"
 
 
 [build-system]
