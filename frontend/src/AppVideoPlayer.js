@@ -160,9 +160,10 @@ export default function AppVideoPlayer({ uri }) {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
+          marginBottom: 20,
         }}
       >
-        <LottieView
+        {/* <LottieView
           autoPlay
           loop
           ref={animation}
@@ -171,8 +172,8 @@ export default function AppVideoPlayer({ uri }) {
             height: 100,
           }}
           source={require("../assets/avatar1.json")}
-        />
-        <CustomText>Here's your video</CustomText>
+        /> */}
+        <CustomHeadingText>Here's your video!</CustomHeadingText>
       </View>
       <Video
         ref={ref}
