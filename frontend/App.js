@@ -10,12 +10,11 @@ import { StyleSheet } from "react-native";
 import AppVideoPlayer from "./src/AppVideoPlayer";
 import VideoUploadScreen from "./src/Home";
 import Loader from "./src/Loader";
+import { registerRootComponent } from "expo";
 
 export default function App() {
   const [uploading, setUploading] = useState(false);
-  const [generatedSongURL, setGeneratedSongURL] = useState(
-    "https://regular-adder-sadly.ngrok-free.app/static/final_video.mp4"
-  );
+  const [generatedSongURL, setGeneratedSongURL] = useState(null);
   let [fontsLoaded, fontError] = useFonts({
     NotoSans_800ExtraBold,
     NotoSans_500Medium,
