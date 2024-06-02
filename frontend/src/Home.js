@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
 
     aspectRatio: 1,
 
-    borderRadius: "50%",
+    borderRadius: 100,
     alignItems: "center",
     justifyContent: "center",
     display: "flex",
